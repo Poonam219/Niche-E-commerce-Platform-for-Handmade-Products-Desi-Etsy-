@@ -1,0 +1,25 @@
+{
+  "name": "desi-etsy",
+  "version": "1.0.0",
+  "description": "Build a mini marketplace where local artisans can register, list handmade products, and customers can purchase them online.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Poonam219/Niche-E-commerce-Platform-for-Handmade-Products-Desi-Etsy-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Poonam219/Niche-E-commerce-Platform-for-Handmade-Products-Desi-Etsy-/issues"
+  },
+  "homepage": "https://github.com/Poonam219/Niche-E-commerce-Platform-for-Handmade-Products-Desi-Etsy-#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

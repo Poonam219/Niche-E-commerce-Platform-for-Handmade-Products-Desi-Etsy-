@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import app from './app.js';
 import { connectDB } from './config/db.js';
+import cors from "cors";
+app.use(cors()); // or app.use(cors({ origin: "http://localhost:5173", credentials: true }))
 
 const PORT = process.env.PORT || 4000;
 

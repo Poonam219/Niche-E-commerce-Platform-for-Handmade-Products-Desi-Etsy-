@@ -1,45 +1,27 @@
-import { useMemo } from "react";
-import { useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProducts } from "../api/products";
+import axios from "axios";
 import ProductCard from "../components/ProductCard";
-import Filters from "../components/Filters";
-import { SkeletonCard } from "../components/SkeletonCard";
 
-export default function ProductList(){
-  const { search } = useLocation();
-  const params = useMemo(() => Object.fromEntries(new URLSearchParams(search)), [search]);
+const client = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000",
+});
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["products", params],
-    queryFn: () => fetchProducts(params)
+export default function ProductList() {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => (await client.get("/api/products")).data,
   });
+
+  if (isError) return <div className="panel">Failed to load products</div>;
+  if (isLoading) return <div className="panel">Loading…</div>;
 
   const items = data?.data || [];
 
   return (
-    <div>
-      <Filters />
-
-      {isError && (
-        <div className="panel" style={{marginTop:16, color:"salmon"}}>
-          Error: {String(error)}
-        </div>
-      )}
-
-      {isLoading ? (
-        <div className="grid">
-          {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
-        </div>
-      ) : items.length === 0 ? (
-        <div className="panel" style={{marginTop:16}}>
-          No products match your filters.
-        </div>
-      ) : (
-        <div className="grid">
-          {items.map(p => <ProductCard key={p._id} item={p} />)}
-        </div>
-      )}
+    <div className="grid">
+      {items.map((p) => (
+        <ProductCard key={p._id} item={p} />
+      ))}
     </div>
   );
 }

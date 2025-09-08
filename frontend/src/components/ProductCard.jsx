@@ -9,8 +9,7 @@ export default function ProductCard({ item }) {
     >
       <img
         className="img"
-        // 👉 if no image exists from backend, use picsum.photos
-        src={item.images?.[0] || "https://picsum.photos/600/400"}
+        src={item.images?.[0] || "https://picsum.photos/400/300"}
         alt={item.title}
       />
       <div className="body">
@@ -22,9 +21,7 @@ export default function ProductCard({ item }) {
             gap: 8,
           }}
         >
-          <div style={{ fontWeight: 800, fontSize: 16, lineHeight: 1.25 }}>
-            {item.title}
-          </div>
+          <div style={{ fontWeight: 800, fontSize: 16 }}>{item.title}</div>
           <span className="badge">{item.category}</span>
         </div>
         <div className="meta">
