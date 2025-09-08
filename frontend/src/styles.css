@@ -1,0 +1,109 @@
+:root{
+  --bg:#0e0f12; --text:#f7f7f7; --muted:rgba(255,255,255,.7);
+  --brand:#84cc16;           /* lime */
+  --brand-2:#22c55e;         /* green */
+  --neutral:#a3a3a3;         /* gray */
+  --dark:#0e0f12;
+  --card:rgba(255,255,255,.05); --border:rgba(163,163,163,.18); --ring:rgba(34,197,94,.35);
+}
+
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{
+  margin:0;
+  font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
+  color:var(--text);
+  background: linear-gradient(180deg, var(--dark) 0%, #1a1918 100%);
+}
+
+/* layout */
+.container{max-width:1200px;margin:0 auto;padding:24px}
+
+/* header */
+.header{
+  position:sticky;top:0;z-index:20;
+  backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, rgba(41,39,40,0.85), rgba(41,39,40,0.35));
+  border-bottom: 1px solid rgba(203,195,188,0.12);
+}
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px}
+.brand{display:flex;gap:10px;align-items:center}
+.brand-logo{
+  height:32px;width:32px;border-radius:10px;
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));
+  box-shadow:0 6px 30px var(--ring)
+}
+.brand-title{font-weight:800;letter-spacing:.2px}
+.actions{display:flex;gap:10px}
+
+/* buttons */
+.btn{
+  padding:10px 14px;border-radius:12px;border:1px solid var(--border);
+  background:rgba(255,255,255,0.06);
+  color:var(--text); cursor:pointer; transition:all .25s ease; font-weight:600
+}
+.btn:hover{transform:translateY(-1px); box-shadow:0 8px 30px rgba(0,0,0,.35), 0 0 0 3px var(--ring)}
+.btn.primary{
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));
+  border-color:transparent;
+  color:#0a0b0d; /* dark text on bright gradient */
+}
+
+/* hero */
+.hero{padding:30px 24px 10px}
+.hero h1{
+  margin:0 0 8px 0; font-size:30px;
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p{margin:0;color:var(--muted)}
+
+/* panel & filters */
+.panel{
+  margin-top:18px; padding:14px; border-radius:16px; background:var(--card);
+  border:1px solid var(--border); box-shadow:0 10px 40px rgba(0,0,0,.25)
+}
+.filters{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr;gap:10px}
+.input,.select{
+  width:100%; padding:12px 12px; border-radius:12px;
+  background:rgba(255,255,255,0.06); /* was a slightly tinted grey; keeping consistent */
+  border:1px solid var(--border); color:var(--text)
+}
+.input::placeholder{color:#bdbdbd}
+.select{appearance:none}
+
+/* grid & cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:16px}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  border-radius:16px;               /* ensures rounded corners */
+  overflow:hidden;                  /* keeps image corners rounded */
+}  /* ← fixed: only one closing brace */
+.card .img{width:100%; aspect-ratio:4/3; object-fit:cover; display:block}
+.card .body{padding:14px}
+.meta{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:6px}
+.price{font-weight:800}
+.badge{
+  background:linear-gradient(135deg, color-mix(in srgb, var(--brand) 25%, transparent), color-mix(in srgb, var(--brand-2) 25%, transparent));
+  border:1px solid color-mix(in srgb, var(--neutral) 35%, transparent);
+  color:var(--neutral);
+  border-radius:999px; padding:6px 10px; font-size:11px;
+}
+
+/* skeletons */
+.skeleton{
+  animation:pulse 1.4s ease-in-out infinite;
+  background:linear-gradient(90deg, rgba(255,255,255,.06) 25%, rgba(255,255,255,.10) 37%, rgba(255,255,255,.06) 63%);
+  background-size:400% 100%
+}
+@keyframes pulse{0%{background-position:100% 0}100%{background-position:0 0}}
+
+.footer{opacity:.70; font-size:13px; padding:24px 0; text-align:center}
+
+/* Responsive tweak for filters on small screens */
+@media (max-width: 840px){
+  .filters{ grid-template-columns:1fr 1fr; }
+}
