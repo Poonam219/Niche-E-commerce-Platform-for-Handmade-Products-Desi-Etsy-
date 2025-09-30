@@ -3,26 +3,28 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 const signToken = (user) =>
-  jwt.sign(
-    { sub: user._id.toString(), role: user.role, isApproved: user.isApproved },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
-  );
+  jwt.sign({ sub: user._id.toString(), role: user.role, isApproved: user.isApproved },
+    process.env.JWT_SECRET, { expiresIn: "1d" });
 
 export async function register(req, res) {
   try {
-    const { name, email, password, role = "customer" } = req.body;
+    const { name, email, password, role = "customer", artisanProfile } = req.body;
 
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ message: "Email already in use" });
 
     const hash = await bcrypt.hash(password, 10);
+
+    // Never allow admin via public registration
+    const safeRole = role === "artisan" ? "artisan" : "customer";
+
     const user = await User.create({
       name,
       email,
       passwordHash: hash,
-      role
-      // pre-save hook sets approval for artisan
+      role: safeRole,
+      ...(safeRole === "artisan" ? { artisanProfile } : {})
+      // approval fields handled by pre-save hook
     });
 
     const token = signToken(user);

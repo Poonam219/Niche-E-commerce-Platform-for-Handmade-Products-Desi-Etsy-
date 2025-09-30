@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Context/AuthContext";
+// frontend/src/pages/Login.jsx
+import { useAuth } from "../context/AuthContext"; 
+
 
 export default function Login() {
   const {

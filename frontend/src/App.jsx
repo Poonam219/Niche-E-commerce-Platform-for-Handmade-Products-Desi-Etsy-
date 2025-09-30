@@ -1,27 +1,39 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function App() {
+  const location = useLocation();
+
   return (
     <div>
       <header className="header">
         <div className="navbar container">
-          <div className="brand">
+          <Link to="/" className="brand" aria-label="Desi-Etsy home">
             <div className="brand-logo" />
             <div className="brand-title">desi-etsy</div>
-          </div>
-          <div className="actions">
-            <a className="btn" href="/login">Sign in</a>
-            <a className="btn primary" href="/register">Become an Artisan</a>
-          </div>
+          </Link>
+
+          <nav className="actions" aria-label="Primary">
+            <Link className="btn" to="/login">Sign in</Link>
+            
+            <Link className="btn primary" to="/register">Register</Link>
+          </nav>
         </div>
       </header>
 
       <section className="hero container">
-        <motion.h1 initial={{opacity:0, y:8}} animate={{opacity:1, y:0}} transition={{duration:.4}}>
+        <motion.h1
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
           Discover Handmade Treasures
         </motion.h1>
-        <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.15, duration:.4}}>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15, duration: 0.4 }}
+        >
           Authentic crafts from local artisans. Filter, explore and support small makers.
         </motion.p>
       </section>
@@ -30,10 +42,10 @@ export default function App() {
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
-            initial={{opacity:0, y:8}}
-            animate={{opacity:1, y:0}}
-            exit={{opacity:0, y:-8}}
-            transition={{duration:.25}}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
           >
             <Outlet />
           </motion.div>
