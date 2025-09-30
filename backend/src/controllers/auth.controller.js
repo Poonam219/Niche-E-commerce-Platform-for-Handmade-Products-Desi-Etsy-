@@ -2,37 +2,60 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-const signToken = (user) => {
-  const payload = { sub: user._id, role: user.role, name: user.name, email: user.email };
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
-};
+const signToken = (user) =>
+  jwt.sign(
+    { sub: user._id.toString(), role: user.role, isApproved: user.isApproved },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
 
-export const register = async (req, res) => {
-  const { name, email, password, role } = req.body;
-  const exists = await User.findOne({ email });
-  if (exists) return res.status(409).json({ message: "Email already registered" });
+export async function register(req, res) {
+  try {
+    const { name, email, password, role = "customer" } = req.body;
 
-  const hash = await bcrypt.hash(password, 10);
-  const user = await User.create({
-    name, email, password: hash, role,
-    isApproved: role === "artisan" ? false : true
-  });
-  const token = signToken(user);
-  res.status(201).json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role, isApproved: user.isApproved } });
-};
+    const exists = await User.findOne({ email });
+    if (exists) return res.status(400).json({ message: "Email already in use" });
 
-export const login = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) return res.status(401).json({ message: "Invalid credentials" });
-  const ok = await bcrypt.compare(password, user.password);
-  if (!ok) return res.status(401).json({ message: "Invalid credentials" });
-  const token = signToken(user);
-  res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role, isApproved: user.isApproved } });
-};
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      name,
+      email,
+      passwordHash: hash,
+      role
+      // pre-save hook sets approval for artisan
+    });
 
-export const me = async (req, res) => {
-  const { sub } = req.user;
-  const user = await User.findById(sub).select("-password");
-  res.json({ user });
-};
+    const token = signToken(user);
+    return res.status(201).json({
+      message: "Registered",
+      user: { _id: user._id, name: user.name, email: user.email, role: user.role },
+      token
+    });
+  } catch (e) {
+    return res.status(500).json({ message: "Server error", error: e.message });
+  }
+}
+
+export async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email }).select("+passwordHash");
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!ok) return res.status(400).json({ message: "Invalid credentials" });
+
+    const token = signToken(user);
+    return res.json({
+      message: "Logged in",
+      user: { _id: user._id, name: user.name, email: user.email, role: user.role },
+      token
+    });
+  } catch (e) {
+    return res.status(500).json({ message: "Server error", error: e.message });
+  }
+}
+
+export async function me(req, res) {
+  return res.json({ user: req.user });
+}

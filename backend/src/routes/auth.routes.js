@@ -22,4 +22,7 @@ router.post("/register", validate(registerSchema), register);
 router.post("/login", validate(loginSchema), login);
 router.get("/me", auth(), me);
 
+// TEMP debug: prove this router is mounted
+router.get("/ping", (_req, res) => res.json({ ok: true, where: "auth router" }));
+
 export default router;

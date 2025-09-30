@@ -1,26 +1,32 @@
 import Product from "../models/Product.js";
+import User from "../models/User.js";
 
-export const listProducts = async (req, res) => {
-  const { category, minPrice, maxPrice, sort="createdAt:desc", page=1, limit=12, q } = req.query;
+export async function listProducts(req, res) {
+  try {
+    const { search = "", category, page = 1, limit = 12, sort } = req.query;
+    const q = {};
+    if (search) q.title = { $regex: search, $options: "i" };
+    if (category) q.category = category;
 
-  const filter = {};
-  if (category) filter.category = category;
-  if (minPrice || maxPrice) {
-    filter.price = {
-      ...(minPrice ? { $gte: +minPrice } : {}),
-      ...(maxPrice ? { $lte: +maxPrice } : {}),
+    const opts = {
+      skip: (Number(page) - 1) * Number(limit),
+      limit: Number(limit)
     };
+
+    const sortMap = {
+      price_asc: { price: 1 },
+      price_desc: { price: -1 },
+      newest: { createdAt: -1 }
+    };
+    opts.sort = sortMap[sort] || sortMap["newest"];
+
+    const [data, total] = await Promise.all([
+      Product.find(q).populate("artisan", "name").setOptions(opts).lean(),
+      Product.countDocuments(q)
+    ]);
+
+    return res.json({ data, total, page: Number(page), limit: Number(limit) });
+  } catch (e) {
+    return res.status(500).json({ message: "Server error", error: e.message });
   }
-  if (q) filter.$text = { $search: q };
-
-  const [field, dir] = sort.split(":");
-  const docs = await Product.find(filter)
-    .populate("artisan", "name")
-    .sort({ [field]: dir === "asc" ? 1 : -1 })
-    .skip((+page - 1) * +limit)
-    .limit(+limit)
-    .lean();
-
-  const total = await Product.countDocuments(filter);
-  res.json({ data: docs, total, page:+page, limit:+limit });
-};
+}

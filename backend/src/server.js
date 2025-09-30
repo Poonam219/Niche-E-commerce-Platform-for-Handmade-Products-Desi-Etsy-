@@ -1,15 +1,13 @@
-import 'dotenv/config';
-import app from './app.js';
-import { connectDB } from './config/db.js';
-import cors from "cors";
-app.use(cors()); // or app.use(cors({ origin: "http://localhost:5173", credentials: true }))
+import "dotenv/config";
+import app from "./app.js";
+import { connectDB } from "./config/db.js";
 
 const PORT = process.env.PORT || 4000;
 
 try {
-  await connectDB(); // <-- ensure DB is live BEFORE starting server
+  await connectDB(); // ensure DB is up BEFORE starting server
   app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
 } catch (err) {
-  console.error('Startup error:', err?.message);
+  console.error("Startup error:", err?.message);
   process.exit(1);
 }

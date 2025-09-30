@@ -1,15 +1,22 @@
 import express from "express";
 import cors from "cors";
-import { router as apiRouter } from "./routes/index.js";
+import morgan from "morgan";
+
+import authRoutes from "./routes/auth.routes.js";
+import productsRoutes from "./routes/products.routes.js";
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-// sanity check
-app.get("/", (_req, res) => res.json({ ok: true, service: "desi-etsy-backend" }));
+// global middleware
+app.use(cors());                  // allow frontend during dev
+app.use(express.json());          // parse JSON body
+app.use(morgan("dev"));           // request logs
 
-// mount /api
-app.use("/api", apiRouter);
+// health check
+app.get("/health", (_req, res) => res.send("ok"));
+
+// routes
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productsRoutes);
 
 export default app;
