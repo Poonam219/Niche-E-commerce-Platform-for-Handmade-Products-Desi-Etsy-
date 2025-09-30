@@ -1,8 +1,25 @@
+<<<<<<< HEAD
 import { Outlet, Link, useLocation } from "react-router-dom";
+=======
+import { Outlet, useLocation, Link, useNavigate } from "react-router-dom";
+>>>>>>> 3d255ac6cebe631732a33b79f6fef0fb3f9177e3
 import { AnimatePresence, motion } from "framer-motion";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "./Context/AuthContext";
 
 export default function App() {
   const location = useLocation();
+<<<<<<< HEAD
+=======
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+>>>>>>> 3d255ac6cebe631732a33b79f6fef0fb3f9177e3
 
   return (
     <div>
@@ -11,6 +28,7 @@ export default function App() {
           <Link to="/" className="brand" aria-label="Desi-Etsy home">
             <div className="brand-logo" />
             <div className="brand-title">desi-etsy</div>
+<<<<<<< HEAD
           </Link>
 
           <nav className="actions" aria-label="Primary">
@@ -18,6 +36,28 @@ export default function App() {
             
             <Link className="btn primary" to="/register">Register</Link>
           </nav>
+=======
+          </div>
+
+          <div className="actions">
+            {!user ? (
+              <>
+                <Link className="btn" to="/login">Sign in</Link>
+                <Link className="btn primary" to="/register">Become an Artisan</Link>
+              </>
+            ) : user.role === "admin" ? (
+              <>
+                <Link className="btn" to="/admin">Admin Panel</Link>
+                <button className="btn danger" onClick={handleLogout}>Logout</button>
+              </>
+            ) : (
+              <>
+                <Link className="btn" to="/dashboard">Dashboard</Link>
+                <button className="btn danger" onClick={handleLogout}>Logout</button>
+              </>
+            )}
+          </div>
+>>>>>>> 3d255ac6cebe631732a33b79f6fef0fb3f9177e3
         </div>
       </header>
 
@@ -55,6 +95,8 @@ export default function App() {
       <footer className="container footer">
         © {new Date().getFullYear()} desi-etsy · Crafted for artisans
       </footer>
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
